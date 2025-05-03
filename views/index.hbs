@@ -1,0 +1,133 @@
+
+
+{{!-- reference: https://getbootstrap.com/docs/5.2/examples/blog/ --}}
+
+<main class="container">
+  <div class="p-4 p-md-5 mb-4 rounded text-bg-dark position-relative">
+    <div class="col-md-6 px-0">
+      <h1 class="display-4 fst-italic"><a href="/dream/new" class="text-white fw-bold stretched-link" style="text-decoration: none">Add a new dream...</a></h1>
+      <p class="lead my-3">“The dream is the liberation of the spirit from the pressure of external nature, a detachment of the soul from the fetters of matter.” </p>
+      <p class="lead my-3" style="text-align: right;">-- Sigmund Freud, The Interpretation of Dreams</p>
+      {{!-- <p class="lead mb-0"><a href="/dream/new" class="text-white fw-bold stretched-link">Add a new dream...</a></p> --}}
+    </div>
+  </div>
+
+  <div class="row g-5">
+    <div class="col-md-8">
+      <h3 class="pb-4 mb-4 border-bottom">
+        <span class="fst-italic">Your Dream Journal</span>
+        <a href="/delete">[Edit]</a>
+      </h3>
+      
+        {{#each dreams}}
+        <div class="col-md-12">
+          <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+            <div class="col p-4 d-flex flex-column position-static">
+              <strong class="d-inline-block mb-2 text-success">{{this.colorfulness}}</strong>
+              <h3 class="mb-0">{{this.title}}</h3>
+              <div class="mb-1 text-muted">{{toDate this.date}}</div>
+              <p class="mb-auto">{{this.narration}}</p>
+              <a href="/dream/{{slug}}" class="stretched-link">Continue reading</a>
+            </div>
+            <div class="col-auto d-none d-lg-block">
+              <svg class="bd-placeholder-img" width="200" height="250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#55595c"/><text x="50%" y="50%" fill="#eceeef" dy=".3em">{{this.emotions}}</text></svg>
+            </div>
+          </div>
+        </div>
+        {{!-- <li><a href="/dream/{{slug}}">{{title}}</a></li> --}}
+        {{/each}}
+    </div>
+
+    <div class="col-md-4">
+      <div class="position-sticky" style="top: 2rem;">
+        <div class="p-4 mb-3 bg-light rounded">
+          <h4 class="fst-italic">About</h4>
+          {{!-- HERE --}}
+          <p class="mb-0">
+            Everyone dreams multiple times each night, but they are prone to forgetting dreams when they wake up. Keeping a dream journal allows people to improve dream recall, resolve their inner conflict, and feul their creativity. 
+          </p>
+          <br>
+          <p class="mb-0">
+            Dreamcatcher is a web app that allows users to keep track of their dreams. Users can add detailed description of their dreams with the date, emotion (positive or negative), colorfulness (in-color or black-and-white), and narration. Dreamcatcher also allows users to see their dreaming statistics: the total number of tracked dreams and the day when they had the most number of dreams. 
+          </p>
+        </div>
+
+
+        <div>
+          <canvas id="myChart"></canvas>
+        </div>
+
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+        <script>
+          const ctx = document.getElementById('myChart');
+          const months = [...Array(6).keys()].map(function(month) {
+            const previousMonth = new Date();
+            previousMonth.setMonth(previousMonth.getMonth() - month);
+            return previousMonth.toLocaleString('default', { month: 'short' });
+          }).reverse();
+
+          // count number of dreams for each month
+          var dream_dates = [];
+          {{#each dreams}}
+            dream_dates.push("{{this.date}}");
+          {{/each}}
+          console.log(dream_dates);
+          const counts = months.map(function(month) {
+              return dream_dates.filter(function(date) {
+                return (new Date(date)).toLocaleString('en-US', { month: 'short' }) === month;
+              }).length;
+          });
+          console.log(counts);
+
+          const yMax = Math.max(...counts);
+          const yAxes = parseInt((yMax + 4) / 5) * 5;
+          const index = counts.indexOf(yMax);
+          const maxMonth = months[index];
+          // convert maxMonth to full month name
+          const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+          const maxMonthName = new Date(2021, MONTHS.indexOf(maxMonth), 1).toLocaleString('default', { month: 'long' });
+
+          new Chart(ctx, {
+            type: 'line',
+            data: {
+              labels: months,
+              datasets: [{
+                label: '# of Dreams',
+                data: counts,
+                borderWidth: 1
+              }]
+            },
+            options: {
+              plugins: {
+                title: {
+                  display: true,
+                  text: 'For the past 6 months, you are dreamiest in ' + maxMonthName
+                }
+              },
+              y: {
+                min: 0,
+                max: yAxes,
+                ticks: {
+                  stepSize: 1
+                }
+              }
+            }
+          });
+        </script>
+
+
+
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<footer class="blog-footer">
+  <p>Dreamcatcher 2022</p>
+  <p>
+    <a href="#">Back to top</a>
+  </p>
+</footer>
+

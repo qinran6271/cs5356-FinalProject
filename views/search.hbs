@@ -1,0 +1,57 @@
+
+{{!-- <div style="text-align: center;">
+    <form method="GET" action="/search">
+        <input type="search" class="form-control rounded" name="search" placeholder="Search by title ..." aria-label="Search" aria-describedby="search-addon" />
+        <input type="submit" value="Search">
+    </form>
+</div> --}}
+
+<div class="mt-4 mb-3">
+
+  <div class="row height d-flex justify-content-center align-items-center">
+
+    <div class="col-md-8">
+
+      <div class="form">
+        {{!-- <i class="fa fa-search"></i> --}}
+        <form method="GET" action="/search">
+            <input type="text" class="form-control form-input" name="search" placeholder="Search by title ..."/>
+            <input type="submit" class="col-md-12" value="Search">
+        </form>
+        {{!-- <span class="left-pan"><i class="fa fa-microphone"></i></span> --}}
+      </div>
+      
+    </div>
+    
+  </div>
+  
+</div>
+
+{{!-- <ol>
+{{#each dreams as |a|}}
+<li><a href="/dream/{{slug}}">{{title}}</a></li>
+{{/each}}
+</ol> --}}
+
+<main class="row d-flex justify-content-center">
+    <div class="col-md-8">
+    {{#each dreams}}
+    <div class="col-md-12">
+        <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm h-md-250 position-relative">
+        <div class="col p-4 d-flex flex-column position-static">
+            <strong class="d-inline-block mb-2 text-success">{{this.colorfulness}}</strong>
+            <h3 class="mb-0">{{this.title}}</h3>
+            <div class="mb-1 text-muted">{{toDate this.date}}</div>
+            <p class="mb-auto">{{this.narration}}</p>
+            <a href="/dream/{{slug}}" class="stretched-link">Continue reading</a>
+        </div>
+        <div class="col-auto d-none d-lg-block">
+            <svg class="bd-placeholder-img" width="200" height="250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: Thumbnail" preserveAspectRatio="xMidYMid slice" focusable="false"><title>Placeholder</title><rect width="100%" height="100%" fill="#55595c"/><text x="50%" y="50%" fill="#eceeef" dy=".3em">{{this.emotions}}</text></svg>
+        </div>
+        </div>
+    </div>
+    {{!-- <li><a href="/dream/{{slug}}">{{title}}</a></li> --}}
+    {{/each}}
+    </div>
+</main>
+
