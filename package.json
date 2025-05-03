@@ -9,6 +9,7 @@
     "express-session": "^1.17.3",
     "flowbite": "^1.5.3",
     "hbs": "^4.2.0",
+    "mongodb": "^6.16.0",
     "mongoose": "^6.6.7",
     "mongoose-slug-plugin": "^2.1.0",
     "mongoose-url-slugs": "^1.0.2",
@@ -25,6 +26,7 @@
   },
   "scripts": {
     "start": "node app.mjs",
-    "dev": "nodemon app.mjs"
+    "dev": "nodemon app.mjs",
+    "test": "mocha"
   }
 }

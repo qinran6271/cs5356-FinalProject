@@ -1,46 +1,55 @@
-import mongoose, { Schema } from 'mongoose';
-import mongooseSlugPlugin from 'mongoose-slug-plugin';
+import mongoose from "mongoose";
+import mongooseSlugPlugin from "mongoose-slug-plugin";
+import fs from "fs";
+import path from "path";
+import url from "url";
 
 const DreamSchema = new mongoose.Schema({
-    user: {type: String, required: true},
-    title: {type: String, required: true},
-    date: {type: Date, required: true},
-    emotions: {type: String, required: true},
-    colorfulness: {type: String, required: true},
-    narration: {type: String, required: true}
-}); 
+  user:        { type: String, required: true },
+  title:       { type: String, required: true },
+  date:        { type: Date,   required: true },
+  emotions:    { type: String, required: true },
+  colorfulness:{ type: String, required: true },
+  narration:   { type: String, required: true },
+});
+DreamSchema.plugin(mongooseSlugPlugin, { tmpl: "<%=title%>" });
 
 const UserSchema = new mongoose.Schema({
-    username: {type: String, required: true, unique: true}, 
-    password: {type: String},
-    name: {type: String, required: true},
-    mechanism: {type: String, required: true} // google or password
+  username: { type: String, required: true, unique: true },
+  password: { type: String },
+  name:     { type: String, required: true },
+  mechanism:{ type: String, required: true },
 });
 
-DreamSchema.plugin(mongooseSlugPlugin, {tmpl:'<%=title%>'});
+mongoose.model("Dream", DreamSchema);
+mongoose.model("User",  UserSchema);
 
-mongoose.model('User', UserSchema);
-mongoose.model('Dream', DreamSchema);
+let connectionString;
 
-// is the environment variable, NODE_ENV, set to PRODUCTION? 
-import fs from 'fs';
-import path from 'path';
-import url from 'url';
-const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
-let dbconf;
-if (process.env.NODE_ENV === 'PRODUCTION') {
-    // if we're in PRODUCTION mode, then read the configration from a file
-    // use blocking file io to do this...
-    const fn = path.join(__dirname, 'config.json');
-    const data = fs.readFileSync(fn);
-
-    // our configuration file will be in json, so parse it and set the
-    // conenction string appropriately!
-    const conf = JSON.parse(data);
-    dbconf = conf.dbconf;
+if (process.env.NODE_ENV === "PRODUCTION") {
+  const __dirname = path.dirname(url.fileURLToPath(import.meta.url));
+  const configPath = path.join(__dirname, "config.json");
+  const raw = fs.readFileSync(configPath, "utf8");
+  const conf = JSON.parse(raw);
+  connectionString = conf.dbconf;
+} else if (process.env.MONGO_URL) {
+  connectionString = process.env.MONGO_URL;
 } else {
-    // if we're not in PRODUCTION mode, then use
-    dbconf = 'mongodb://localhost/yw5073';
+  connectionString = "mongodb://localhost:27017/yourLocalDbName";
 }
 
-mongoose.connect(dbconf);
+if (!connectionString) {
+  console.error("No MongoDB connection string available.");
+  process.exit(1);
+}
+
+mongoose
+  .connect(connectionString, {
+    useNewUrlParser:    true,
+    useUnifiedTopology: true,
+  })
+  .then(() => console.log("MongoDB connected"))
+  .catch((err) => {
+    console.error("MongoDB connection error:", err);
+    process.exit(1);
+  });
