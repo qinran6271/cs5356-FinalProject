@@ -1,5 +1,18 @@
 
-<main class="form-signin w-100 m-auto" style="text-align: center">
+{{!-- <main class="form-signin w-100 m-auto" style="text-align: center">
     Oops! Something went wrong.
     <a class="w-100 btn btn-lg btn-warning" href="back">Try again!</a>
+</main> --}}
+{{!-- views/login_failure.hbs --}}
+<main class="form-signin w-100 m-auto" style="text-align: center">
+  {{#if error}}
+    <h2 class="text-danger">{{error}}</h2>
+  {{else}}
+    <h2>Oops! Something went wrong.</h2>
+  {{/if}}
+
+  <a class="w-100 btn btn-lg btn-warning" href="{{failureRedirect}}">
+    Try again!
+  </a>
 </main>
+

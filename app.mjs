@@ -46,11 +46,12 @@ handlebars.registerHelper('toDate', function (date) {
   return new Date(date).toLocaleDateString(undefined, options);
 });
 
-// login with google
-// app.get('/login', (req, res) => {
-//     res.render('login', {user: null, message: req.session.message});
-// });
+// login
+app.get('/login', (req, res) => {
+    res.render('login', {user: null, message: req.session.message});
+});
 
+// login with google
 // app.get('/login/federated/google', passport.authenticate('google'));
 
 // app.get('/oauth2/redirect/google', passport.authenticate('google', {
@@ -59,50 +60,115 @@ handlebars.registerHelper('toDate', function (date) {
 // }));
 
 // login with local
-app.post('/login/local', passport.authenticate('local', {
-    successRedirect: '/',
-    failureRedirect: '/login_failure'
-}));
+app.post('/login/local', (req, res, next) => {
+    passport.authenticate('local', (err, user, info) => {
+      if (err) {
+        return res.status(500).render('failure', { error: err.message, failureRedirect: '/login' });
+      }
+      if (!user) {
+        return res.status(401).render('failure', { error: info.message, failureRedirect: '/login' });
+      }
+      req.logIn(user, (err) => {
+        if (err) {
+          return res.status(500).render('failure', { error: err.message, failureRedirect: '/login' });
+        }
+        return res.redirect('/');
+      });
+    })(req, res, next);
+  });
 
 app.get('/login_failure', (req, res) => {
     res.render('failure');
 });
 
 
+// signup
 app.get('/signup', (req, res) => {
     res.render('signup', {user: null});
 });
 
 app.post('/signup', (req, res) => {
-    if (req.body.username.length < 8 || req.body.password.length < 8) {
-        console.log('Error: username password too short');
-        res.redirect('/login_failure');
-        return;
+    const { username, password, passwordConfirm, name } = req.body;
+    console.log('username:', username);
+    console.log('password:', password);
+    console.log('passwordConfirm:', passwordConfirm);
+    console.log('name:', name);
+  
+    // 1. Required fields check
+    if (!username || !password || !name) {
+      console.log('Error: missing fields');
+      return res.status(400).render('failure', {
+        error: 'Username, password, password confirmation, and name are all required fields',
+        failureRedirect: '/signup'
+      });
     }
-    bcrypt.hash(req.body.password, 10, (err, hash) => {
-        console.log('hash', hash);
+  
+    // 2. Username length & format
+    if (!/^[a-zA-Z0-9_]+$/.test(username)) {
+      console.log('Error: username format invalid');
+      return res.status(400).render('failure', {
+        error: 'Username can only contain letters, numbers, and underscores',
+        failureRedirect: '/signup'
+      });
+    }
+  
+    // 3. Password length & confirmation
+    if (password.length < 8) {
+      console.log('Error: password too short');
+      return res.status(400).render('failure', {
+        error: 'Password must be at least 8 characters long',
+        failureRedirect: '/signup'
+      });
+    }
+  
+    // 4. Uniqueness check (username already exists)
+    User.findOne({ username }, (err, exists) => {
+      if (err) {
+        console.error('DB error:', err);
+        return res.status(500).render('failure', {
+          error: 'Internal server error, please try again later',
+          failureRedirect: '/signup'
+        });
+      }
+      if (exists) {
+        console.log('Error: username exists');
+        return res.status(409).render('failure', {
+          error: 'This username is already taken, please choose another',
+          failureRedirect: '/signup'
+        });
+      }
+  
+      // 5. Hash password and save
+      bcrypt.hash(password, 10, (err, hash) => {
         if (err) {
-            console.log(err);
-            res.redirect('/signup');
-        } else {
-            const user = new User({
-                username: req.body.username,
-                password: hash,
-                name: req.body.name,
-                mechanism: 'password'
-            });
-            user.save((err) => {
-                if (err) {
-                    console.log(err);
-                    res.redirect('/signup');
-                } else {
-                    res.redirect('/login');
-                }
-            });
+          console.error('Hash error:', err);
+          return res.status(500).render('failure', {
+            error: 'Internal server error, please try again later',
+            failureRedirect: '/signup'
+          });
         }
+  
+        const user = new User({
+          username,
+          password: hash,
+          name,
+          mechanism: 'password'
+        });
+  
+        user.save((err) => {
+          if (err) {
+            console.error('Save user error:', err);
+            return res.status(500).render('failure', {
+              error: 'Registration failed, please try again later',
+              failureRedirect: '/signup'
+            });
+          }
+          return res.redirect('/login');
+        });
+      });
     });
-});
-
+  });
+  
 // require authenticated user to access any route before login
 app.use((req, res, next) => {
     if (req.session.passport) {
