@@ -7,7 +7,15 @@
 //   callbackWaitsForEmptyEventLoop: false
 // });
 // api/index.mjs
-export default function handler(req, res) {
-    return res.status(200).send('OK');
-  }
+// api/index.mjs
+import serverless from 'serverless-http';
+import express    from 'express';
+
+const app = express();
+app.get('/', (req, res) => res.send('Hello Express'));
+
+export default serverless(app, {
+  callbackWaitsForEmptyEventLoop: false
+});
+
   
