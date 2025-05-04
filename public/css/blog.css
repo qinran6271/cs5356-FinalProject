@@ -8,6 +8,14 @@
   font-family: "Playfair Display", Georgia, "Times New Roman", serif/*rtl:Amiri, Georgia, "Times New Roman", serif*/;
   font-size: 2.25rem;
 }
+@media (max-width: 576px) {
+  .blog-header-logo {
+    font-size: 1.5rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
 
 .blog-header-logo:hover {
   text-decoration: none;
