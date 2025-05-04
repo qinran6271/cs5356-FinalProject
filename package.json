@@ -9,6 +9,7 @@
     "express-session": "^1.17.3",
     "flowbite": "^1.5.3",
     "hbs": "^4.2.0",
+    "mongodb": "^6.16.0",
     "mongoose": "^6.6.7",
     "mongoose-slug-plugin": "^2.1.0",
     "mongoose-url-slugs": "^1.0.2",
@@ -16,6 +17,7 @@
     "passport": "^0.6.0",
     "passport-google-oidc": "^0.1.0",
     "passport-local": "^1.0.0",
+    "serverless-http": "^3.2.0",
     "startbootstrap-clean-blog": "^6.0.8"
   },
   "devDependencies": {
@@ -25,6 +27,7 @@
   },
   "scripts": {
     "start": "node app.mjs",
-    "dev": "nodemon app.mjs"
+    "dev": "nodemon app.mjs",
+    "test": "mocha"
   }
 }
