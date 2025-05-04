@@ -5,7 +5,8 @@ import * as db from './db.mjs';
 import mongoose from 'mongoose';
 
 import express from 'express';
-import session from 'express-session';
+import session     from 'express-session';
+import MongoStore  from 'connect-mongo';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -27,13 +28,21 @@ import bcrypt from 'bcryptjs';
 
 app.set('view engine', 'hbs');
 
-const sessionOptions = { 
-    secret: process.env.SESSION_SECRET, 
-    saveUninitialized: false, 
-    resave: false
-};
-app.use(session(sessionOptions));
-app.use(passport.authenticate('session'));
+// session 
+app.use(session({
+    secret: process.env.SESSION_SECRET,
+    store:  MongoStore.create({ mongoUrl: process.env.MONGODB_URI }),
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      maxAge: 24 * 60 * 60 * 1000
+    }
+  }));
+  
+app.use(passport.initialize());
+app.use(passport.session());
+  
+
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -327,7 +336,6 @@ app.post('/delete', (req, res) => {
     });
 });
 
-// app.listen(process.env.PORT || 3000);
 
 export default app
 
