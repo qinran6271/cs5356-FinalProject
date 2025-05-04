@@ -9,6 +9,8 @@ import session     from 'express-session';
 import MongoStore  from 'connect-mongo';
 import path from 'path';
 import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 import pkg from 'hbs';
 const { handlebars } = pkg;
@@ -17,8 +19,7 @@ import Chart from 'chart.js';
 
 
 const app = express();
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+
 
 // passport.js
 import passport from 'passport';
@@ -27,6 +28,7 @@ import LocalStrategy from 'passport-local';
 import bcrypt from 'bcryptjs';
 
 app.set('view engine', 'hbs');
+app.set('views', path.join(__dirname, 'views'));  
 
 // session 
 app.use(session({
