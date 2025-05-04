@@ -28,7 +28,7 @@ import bcrypt from 'bcryptjs';
 app.set('view engine', 'hbs');
 
 const sessionOptions = { 
-    secret: 'secret for signing session id', 
+    secret: process.env.SESSION_SECRET, 
     saveUninitialized: false, 
     resave: false
 };
