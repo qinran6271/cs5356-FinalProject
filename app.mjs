@@ -327,5 +327,6 @@ app.post('/delete', (req, res) => {
     });
 });
 
-export default app;
+app.listen(process.env.PORT || 3000);
+export default app
 
