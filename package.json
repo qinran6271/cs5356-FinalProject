@@ -27,8 +27,8 @@
     "vercel": "^41.7.0"
   },
   "scripts": {
-    "start": "node app.mjs",
-    "dev": "nodemon app.mjs",
+    "start": "node server.mjs",
+    "dev":   "nodemon server.mjs",
     "test": "mocha"
   }
 }
