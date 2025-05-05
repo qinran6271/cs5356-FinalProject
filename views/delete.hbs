@@ -6,18 +6,13 @@
       <form method="POST" action="">
         {{#each dreams}}
         <div class="form-check mb-3">
-          <input
-            class="form-check-input"
-            type="checkbox"
-            id="dream-{{this._id}}"
-            name="toDelete"
-            value="{{this._id}}"
-          >
+          <input type="checkbox" class="form-check-input" id="{{this._id}}" name="{{this._id}}" />
           <label class="form-check-label d-block ms-2" for="dream-{{this._id}}">
             <div class="border rounded p-3 shadow-sm">
               <strong class="text-success text-capitalize">{{this.colorfulness}}</strong>
               <h5 class="mt-1 mb-1">{{this.title}}</h5>
               <div class="small text-muted mb-2">{{toDate this.date}}</div>
+              <p class="mb-0">{{this.emotions}}</p>
               <p class="mb-0">{{this.narration}}</p>
             </div>
           </label>

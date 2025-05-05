@@ -275,25 +275,45 @@ app.get('/dream/new', (req, res) => {
     res.render('dream-new', {user: req.session.passport.user});
 });
 
+
 app.post('/dream/new', (req, res) => {
+    const { title, date, emotions, colorfulness, narration } = req.body;
+    const userId = req.session.passport.user.id;
+  
+    // check empty fields
+    if (!title || !date || !emotions || !colorfulness || !narration) {
+      return res.status(400).render('dream-new', {
+        user:    req.session.passport.user,
+        error:   'all fields are required',
+        form:    { title, date, emotions, colorfulness, narration } // sent back the form data to pre-fill the form
+      });
+    }
+  
+    // 2. save the dream to the database
     const Dream = mongoose.model('Dream');
-    const dream1 = new Dream({
-        user: req.session.passport.user.id,
-        title: req.body.title,
-        date: req.body.date,
-        emotions: req.body.emotions,
-        colorfulness: req.body.colorfulness,
-        narration: req.body.narration
+    const dream = new Dream({
+      user:         userId,
+      title,
+      date,
+      emotions,
+      colorfulness,
+      narration
     });
-    dream1.save((err, result) => {
-        if (err) {
-            console.log(err);
-            res.redirect('/dream/new');
-        } else if (result) {
-            res.redirect('/');
-        }
+  
+    dream.save((err, result) => {
+      if (err) {
+        console.error(err);
+        // if there is an error, render the form again with the error message
+        return res.status(500).render('dream-new', {
+          user:  req.session.passport.user,
+          error: 'failed to save the dream',
+          form:  { title, date, emotions, colorfulness, narration }
+        });
+      }
+      // if the save is successful, redirect to the home page
+      res.redirect('/');
     });
-});
+  });
 
 app.get('/dream/:slug', (req, res) => {
     Dream.findOne({slug: req.params.slug, user: req.session.passport.user.id})
@@ -329,14 +349,17 @@ app.get('/delete', (req, res) => {
 
 app.post('/delete', (req, res) => {
     Dream.deleteMany({user: req.session.passport.user.id, _id: {$in: Object.keys(req.body)}}, (err, result) => {
+        console.log('delete result: ', result);
         if (err) {
             console.log(err);
             res.redirect('/delete');
         } else if (result) {
-            res.redirect('/');
+            res.redirect('/delete');
         }
     });
 });
+
+  
 
 
 export default app
