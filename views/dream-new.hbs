@@ -1,58 +1,106 @@
+<div class="container py-4">
+  <div class="row">
+    <div class="col-12 col-md-8 col-lg-6 mx-auto">
+      <h2 class="h3 text-center mb-4">Describe your dream...</h2>
 
-<div class="container center col-md-4 col-lg-5">
-    <h4 class="mb-3" style="padding-top: 30px">Describe your dream...</h4>
-
-    <form method="POST" action="">
-        <div class="form-group">
-            <label for="title"><b>TITLE</b></label>
-            <input class="form-control" name="title" placeholder="Give your dream a title ..." value=""></input>
+      <form method="POST" action="">
+        <div class="mb-3">
+          <label for="title" class="form-label"><strong>TITLE</strong></label>
+          <input
+            id="title"
+            name="title"
+            type="text"
+            class="form-control"
+            placeholder="Give your dream a title …"
+            value=""
+          >
         </div>
 
         <hr class="dashed">
 
-        <div class="form-group">
-            <label for="date"><b>DATE</b></label>
-            <input type="date" class="form-control" name="date" value=""></input>
+        <div class="mb-3">
+          <label for="date" class="form-label"><strong>DATE</strong></label>
+          <input
+            id="date"
+            name="date"
+            type="date"
+            class="form-control"
+            value=""
+          >
         </div>
 
         <hr class="dashed">
 
-        <div>
-            <b>EMOTIONS</b> <br>
-            <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="emotions" value="positive" />
+        <fieldset class="mb-3">
+          <legend class="col-form-label"><strong>EMOTIONS</strong></legend>
+          <div class="form-check form-check-inline">
+            <input
+              class="form-check-input"
+              type="radio"
+              name="emotions"
+              id="positive"
+              value="positive"
+            >
             <label class="form-check-label" for="positive">Positive</label>
-            </div>
-            <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="emotions" value="negative" />
+          </div>
+          <div class="form-check form-check-inline">
+            <input
+              class="form-check-input"
+              type="radio"
+              name="emotions"
+              id="negative"
+              value="negative"
+            >
             <label class="form-check-label" for="negative">Negative</label>
-            </div>
-        </div>
+          </div>
+        </fieldset>
 
         <hr class="dashed">
 
-        <div>
-            <b>COLORFULNESS</b> <br>
-            <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="colorfulness" value="colorful" />
+        <fieldset class="mb-3">
+          <legend class="col-form-label"><strong>COLORFULNESS</strong></legend>
+          <div class="form-check form-check-inline">
+            <input
+              class="form-check-input"
+              type="radio"
+              name="colorfulness"
+              id="colorful"
+              value="colorful"
+            >
             <label class="form-check-label" for="colorful">Colorful</label>
-            </div>
-            <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="colorfulness" value="colorless" />
+          </div>
+          <div class="form-check form-check-inline">
+            <input
+              class="form-check-input"
+              type="radio"
+              name="colorfulness"
+              id="colorless"
+              value="colorless"
+            >
             <label class="form-check-label" for="colorless">Colorless</label>
-            </div>
-        </div>
+          </div>
+        </fieldset>
 
         <hr class="dashed">
 
-        <div class="form-outline">
-            <label class="form-label" for="narration"><b>NARRATION</b></label>
-            <textarea class="form-control" rows="4" name="narration" placeholder="Describe your dream ..." value=""></textarea>
+        <div class="mb-4">
+          <label for="narration" class="form-label"><strong>NARRATION</strong></label>
+          <textarea
+            id="narration"
+            name="narration"
+            class="form-control"
+            rows="4"
+            placeholder="Describe your dream …"
+          ></textarea>
         </div>
 
-        <br>
-
-        <button class="w-100 btn btn-lg btn-primary" type="submit" value="Add Dream">Add Dream</button>
-    </form>
-
+        <button
+          type="submit"
+          class="w-100 btn btn-lg btn-primary"
+        >
+          Add Dream
+        </button>
+      </form>
+    </div>
+  </div>
 </div>
